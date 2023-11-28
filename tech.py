@@ -5,8 +5,8 @@ import aiohttp
 import os
 app = Flask(__name__, template_folder='template')
 
-app = web.Application()
-server = web.AppRunner(app)
+appx = web.Application()
+server = web.AppRunner(appx)
 # Correct codes
 correct_codes = ["asdfe564", "safasfe654", "hre534tged"]
 
@@ -88,4 +88,4 @@ def check_code_route():
 
 if __name__ == '__main__':
     # Run the app on the specified IP address and port
-    app.run(host='4.193.160.83', debug=True)
+    app.run(host=server, debug=True)
