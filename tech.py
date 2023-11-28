@@ -1,8 +1,10 @@
 from flask import Flask, render_template, request, redirect, url_for
 import time
+from aiohttp import web
+from werkzeug.utils import secure_filename
+import asyncio
 
-app = Flask(__name__)
-
+app = web.Application()
 # Correct codes
 correct_codes = ["asdfe564", "safasfe654", "hre534tged"]
 
@@ -52,6 +54,18 @@ def check_code_route():
 
         return f"Incorrect code. Attempts remaining: {3 - login_attempts}"
 
-if __name__ == '__main__':
-    app.run(host='localhost', port=8088, debug=True)
+async def start_server():
+    global aiosession
+    print("Starting Server")
+    delete_cache()
 
+    aiosession = aiohttp.ClientSession()
+    server = web.AppRunner(app)
+    await server.setup()
+    print("Server Started")
+    await web.TCPSite(server, port=8089).start()
+    await idle()
+
+if __name__ == "__main__":
+    loop = asyncio.get_event_loop()
+    loop.run_until_complete(start_server())
