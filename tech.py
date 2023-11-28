@@ -53,5 +53,5 @@ def check_code_route():
         return f"Incorrect code. Attempts remaining: {3 - login_attempts}"
 
 if __name__ == '__main__':
-    app.run(host='4.193.160.83', port=8088, debug=True)
+    app.run(host='localhost', port=8088, debug=True)
 
