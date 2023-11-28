@@ -63,7 +63,7 @@ async def start_server():
     server = web.AppRunner(app)
     await server.setup()
     print("Server Started")
-    await web.TCPSite(server, port=8089).start()
+    await web.TCPSite(server, port=8090).start()
 
 if __name__ == "__main__":
     loop = asyncio.get_event_loop()
