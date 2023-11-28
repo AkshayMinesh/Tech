@@ -55,7 +55,6 @@ def check_code_route():
 async def start_server():
     global aiosession
     print("Starting Server")
-    delete_cache()
     app.router.add_get("/", home)  
     app.router.add_get("/check_code", check_code_route)
 
