@@ -22,4 +22,15 @@
     </style>
 </head>
 <body>
-    <img
+    <img id="logo" src="{{ url_for('static', filename='vault_tec_logo.png') }}" alt="Tech Vault Logo">
+    
+    <div id="code-form">
+        <form action="/check_code" method="post">
+            <label for="code">Enter Code:</label>
+            <input type="text" id="code" name="code" required>
+            <br>
+            <input type="submit" value="Submit">
+        </form>
+    </div>
+</body>
+</html>
