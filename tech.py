@@ -84,4 +84,4 @@ def check_code_route():
 
 if __name__ == '__main__':
     # Run the app on the specified IP address and port
-    app.run(host='0.0.0.0', port=8092, debug=True)
+    app.run(host='4.193.160.83', debug=True)
