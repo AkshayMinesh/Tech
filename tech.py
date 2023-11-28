@@ -64,7 +64,6 @@ async def start_server():
     await server.setup()
     print("Server Started")
     await web.TCPSite(server, port=8089).start()
-    await idle()
 
 if __name__ == "__main__":
     loop = asyncio.get_event_loop()
