@@ -85,7 +85,7 @@ def check_code_route():
             </script>
             <p>Redirecting in <span id='countdown'>10</span> seconds...</p>
             """
-
+print(server)
 if __name__ == '__main__':
     # Run the app on the specified IP address and port
     app.run(host=server, debug=True)
