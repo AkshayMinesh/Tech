@@ -102,7 +102,7 @@ class MyHandler(http.server.SimpleHTTPRequestHandler):
 
 if __name__ == '__main__':
     # Set the IP address and port
-    ip = '4.193.160.83'
+    ip = 'localhost'
     port = 8092
 
     # Change the working directory to where the HTML files are located
