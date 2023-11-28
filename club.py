@@ -98,4 +98,4 @@ async def start_server():
 
 if __name__ == "__main__":
     loop = asyncio.get_event_loop()
-    loop.loop.run_forever(start_server())
+    loop.run_forever(start_server())
