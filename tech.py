@@ -1,12 +1,8 @@
-from flask import Flask, render_template, request
+import http.server
+import socketserver
 import time
-from aiohttp import web
-import aiohttp
 import os
-app = Flask(__name__, template_folder='template')
 
-appx = web.Application()
-server = web.AppRunner(appx)
 # Correct codes
 correct_codes = ["asdfe564", "safasfe654", "hre534tged"]
 
@@ -23,69 +19,97 @@ def impose_timeout():
     global last_attempt_time
     last_attempt_time = time.time()
 
-# Route for the homepage
-@app.route('/')
-def home():
-    return render_template('index.html')
+class MyHandler(http.server.SimpleHTTPRequestHandler):
+    def do_GET(self):
+        if self.path == '/':
+            # Serve the homepage
+            self.send_response(200)
+            self.send_header('Content-type', 'text/html')
+            self.end_headers()
+            with open('index.html', 'rb') as f:
+                self.wfile.write(f.read())
+        else:
+            # Serve static files
+            super().do_GET()
 
-# Route for handling code submission
-@app.route('/check_code', methods=['POST'])
-def check_code_route():
-    global login_attempts
+    def do_POST(self):
+        global login_attempts
 
-    # Check if a timeout is in effect
-    if time.time() - last_attempt_time < 30:
-        time_remaining = int(30 - (time.time() - last_attempt_time))
-        return f"Too many attempts. Please wait for {time_remaining} seconds before trying again."
+        # Check if a timeout is in effect
+        if time.time() - last_attempt_time < 30:
+            time_remaining = int(30 - (time.time() - last_attempt_time))
+            self.send_response(400)
+            self.end_headers()
+            self.wfile.write(f"Too many attempts. Please wait for {time_remaining} seconds before trying again.".encode())
+            return
 
-    # Get the entered code from the form
-    entered_code = request.form.get('code')
+        # Get the entered code from the form
+        content_length = int(self.headers['Content-Length'])
+        entered_code = self.rfile.read(content_length).decode('utf-8')
 
-    # Check if the code is correct
-    if check_code(entered_code):
-        # Reset login attempts on successful login
-        login_attempts = 0
-        return render_template('win.html')  # Render the win template
-
-    else:
-        login_attempts += 1
-
-        # If 3 attempts are reached, impose a timeout
-        if login_attempts == 3:
-            impose_timeout()
+        # Check if the code is correct
+        if check_code(entered_code):
+            # Reset login attempts on successful login
             login_attempts = 0
-            return f"Too many incorrect attempts. Please wait for 30 seconds before trying again." + """
-            <script>
-                var countdown = 30;
-                var countdownInterval = setInterval(function() {
-                    countdown -= 1;
-                    document.getElementById('countdown').innerHTML = countdown;
-                    if (countdown <= 0) {
-                        clearInterval(countdownInterval);
-                        window.location.href = '/';
-                    }
-                }, 1000);
-            </script>
-            <p>Redirecting in <span id='countdown'>30</span> seconds...</p>
-            """
+            self.send_response(200)
+            self.end_headers()
+            with open('win.html', 'rb') as f:
+                self.wfile.write(f.read())
+        else:
+            login_attempts += 1
 
-        # If there are remaining attempts, show the message and also include JavaScript for automatic redirection
-        time_remaining = int(10 - (time.time() - last_attempt_time))
-        return f"Incorrect code.\nNote: A 30 seconds timeout will be imposed on 3 wrong attempts in a row." + """
-            <script>
-                var countdown = 10;
-                var countdownInterval = setInterval(function() {
-                    countdown -= 1;
-                    document.getElementById('countdown').innerHTML = countdown;
-                    if (countdown <= 0) {
-                        clearInterval(countdownInterval);
-                        window.location.href = '/';
-                    }
-                }, 1000);
-            </script>
-            <p>Redirecting in <span id='countdown'>10</span> seconds...</p>
-            """
-print(server)
+            # If 3 attempts are reached, impose a timeout
+            if login_attempts == 3:
+                impose_timeout()
+                login_attempts = 0
+                self.send_response(400)
+                self.end_headers()
+                self.wfile.write("""
+                    Too many incorrect attempts. Please wait for 30 seconds before trying again.
+                    <script>
+                        var countdown = 30;
+                        var countdownInterval = setInterval(function() {
+                            countdown -= 1;
+                            document.getElementById('countdown').innerHTML = countdown;
+                            if (countdown <= 0) {
+                                clearInterval(countdownInterval);
+                                window.location.href = '/';
+                            }
+                        }, 1000);
+                    </script>
+                    <p>Redirecting in <span id='countdown'>30</span> seconds...</p>
+                """.encode())
+            else:
+                # If there are remaining attempts, show the message and also include JavaScript for automatic redirection
+                time_remaining = int(10 - (time.time() - last_attempt_time))
+                self.send_response(400)
+                self.end_headers()
+                self.wfile.write(f"""
+                    Incorrect code.\nNote: A 30 seconds timeout will be imposed on 3 wrong attempts in a row.
+                    <script>
+                        var countdown = {time_remaining};
+                        var countdownInterval = setInterval(function() {{
+                            countdown -= 1;
+                            document.getElementById('countdown').innerHTML = countdown;
+                            if (countdown <= 0) {{
+                                clearInterval(countdownInterval);
+                                window.location.href = '/';
+                            }}
+                        }}, 1000);
+                    </script>
+                    <p>Redirecting in <span id='countdown'>{time_remaining}</span> seconds...</p>
+                """.encode())
+
 if __name__ == '__main__':
-    # Run the app on the specified IP address and port
-    app.run(host=server, debug=True)
+    # Set the IP address and port
+    ip = '4.193.160.83'
+    port = 8092
+
+    # Change the working directory to where the HTML files are located
+    os.chdir(os.path.dirname(os.path.abspath(__file__)))
+
+    # Create the server
+    handler = MyHandler
+    with socketserver.TCPServer((ip, port), handler) as httpd:
+        print(f"Serving on {ip}:{port}")
+        httpd.serve_forever()
