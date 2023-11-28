@@ -94,7 +94,6 @@ async def start_server():
     await server.setup()
     print("Server Started")
     await web.TCPSite(server, port=8093).start()
-    await idle()
 
 
 if __name__ == "__main__":
