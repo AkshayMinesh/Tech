@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Congratulations!</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #000;
+            margin: 0;
+            overflow: hidden;
+        }
+        #treasure-image {
+            width: 80%;
+            max-width: 500px;
+            animation: openTreasure 2s ease-in-out;
+        }
+        @keyframes openTreasure {
+            from {
+                transform: rotate(0);
+            }
+            to {
+                transform: rotate(720deg);
+            }
+        }
+        #congratulations {
+            color: #fff;
+            font-size: 24px;
+            text-align: center;
+            margin-top: 20px;
+            animation: fadeIn 2s ease-in-out;
+        }
+        @keyframes fadeIn {
+            0% {
+                opacity: 0;
+            }
+            100% {
+                opacity: 1;
+            }
+        }
+        #particles-js {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+    </style>
+</head>
+<body>
+    <div>
+        <h1 id="congratulations">Congratulations! You just won the treasure! XD</h1>
+        <p>You have found the treasure!</p>
+        <img id="treasure-image" src="https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/64862ac6-78fd-48c3-9c17-a673fa891a3d/ddndp94-8c3a4c1b-aeb6-4510-88b4-0a03b0382f96.png/v1/fill/w_800,h_436/treasure_chest_drawing__open__by_yoshiko_animation_ddndp94-fullview.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7ImhlaWdodCI6Ijw9NDM2IiwicGF0aCI6IlwvZlwvNjQ4NjJhYzYtNzhmZC00OGMzLTljMTctYTY3M2ZhODkxYTNkXC9kZG5kcDk0LThjM2E0YzFiLWFlYjYtNDUxMC04OGI0LTBhMDNiMDM4MmY5Ni5wbmciLCJ3aWR0aCI6Ijw9ODAwIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmltYWdlLm9wZXJhdGlvbnMiXX0.gv37YbLkUzfG5q4EdgbzQ1lSdxLYrdM2RFM1_LniGd4" alt="Open Treasure">
+    </div>
+    <div id="particles-js"></div>
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <script>
+        particlesJS('particles-js', {
+            particles: {
+                number: { value: 100 },
+                color: { value: '#ffffff' },
+                shape: { type: 'circle' },
+                opacity: { value: 0.5, anim: { enable: true } },
+                size: { value: 5, random: true },
+                move: { enable: true, speed: 2, direction: 'top', random: true, straight: false, out_mode: 'out' },
+                line_linked: { enable: false }
+            },
+            interactivity: {
+                detect_on: 'canvas',
+                events: { onhover: { enable: false } }
+            }
+        });
+
+        setTimeout(function() {
+            document.getElementById('congratulations').style.opacity = 1;
+        }, 1000); // Fade in after 1 second
+
+    </script>
+</body>
+</html>
