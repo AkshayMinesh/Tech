@@ -2,16 +2,13 @@ from aiohttp import web, ClientSession
 import time
 import asyncio
 from aiohttp.web_exceptions import HTTPFound
+import aiohttp
+import os 
 
-app = web.Application()
-
-# Correct codes
-correct_codes = ["asdfe564", "safasfe654", "hre534tged"]
-
-# Variables to track login attempts
 login_attempts = 0
 last_attempt_time = 0
 
+app = web.Application()
 # Function to check if the code is correct
 def check_code(code):
     return code in correct_codes
@@ -21,27 +18,26 @@ def impose_timeout():
     global last_attempt_time
     last_attempt_time = time.time()
 
-# Route for the homepage
-async def home(request):
-    return web.FileResponse('index.html')  # assuming index.html is in the same directory
-
-# Route for handling code submission
-async def check_code_route(request):
+async def protected_handler(request):
     global login_attempts
 
     # Check if a timeout is in effect
     if time.time() - last_attempt_time < 30:
-        return web.Response(text="Too many attempts. Please wait for 30 seconds before trying again.")
+        time_remaining = int(30 - (time.time() - last_attempt_time))
+        return web.Response(
+            text=f"Too many attempts. Please wait for {time_remaining} seconds before trying again.",
+            status=400
+        )
 
     # Get the entered code from the form
-    data = await request.post()
-    entered_code = data.get('code')
+    entered_code = await request.text()
 
     # Check if the code is correct
     if check_code(entered_code):
         # Reset login attempts on successful login
         login_attempts = 0
-        return web.Response(text="You have successfully entered the correct code.")
+        return web.FileResponse('win.html')  # Render the win template
+
     else:
         login_attempts += 1
 
@@ -49,21 +45,58 @@ async def check_code_route(request):
         if login_attempts == 3:
             impose_timeout()
             login_attempts = 0
-            return web.Response(text="Too many incorrect attempts. Please wait for 30 seconds before trying again.")
+            return web.Response(
+                text=f"Too many incorrect attempts. Please wait for 30 seconds before trying again."
+                     f"<script>"
+                     f"var countdown = 30;"
+                     f"var countdownInterval = setInterval(function() {{"
+                     f"countdown -= 1;"
+                     f"document.getElementById('countdown').innerHTML = countdown;"
+                     f"if (countdown <= 0) {{"
+                     f"clearInterval(countdownInterval);"
+                     f"window.location.href = '/';"
+                     f"}}"
+                     f"}}, 1000);"
+                     f"</script>"
+                     f"<p>Redirecting in <span id='countdown'>30</span> seconds...</p>",
+                status=400
+            )
+        else:
+            # If there are remaining attempts, show the message and also include JavaScript for automatic redirection
+            time_remaining = int(10 - (time.time() - last_attempt_time))
+            return web.Response(
+                text=f"Incorrect code.\nNote: A 30 seconds timeout will be imposed on 3 wrong attempts in a row."
+                     f"<script>"
+                     f"var countdown = {time_remaining};"
+                     f"var countdownInterval = setInterval(function() {{"
+                     f"countdown -= 1;"
+                     f"document.getElementById('countdown').innerHTML = countdown;"
+                     f"if (countdown <= 0) {{"
+                     f"clearInterval(countdownInterval);"
+                     f"window.location.href = '/';"
+                     f"}}"
+                     f"}}, 1000);"
+                     f"</script>"
+                     f"<p>Redirecting in <span id='countdown'>{time_remaining}</span> seconds...</p>",
+                status=400
+            )
 
-        return web.Response(text=f"Incorrect code. Attempts remaining: {3 - login_attempts}")
 
 async def start_server():
+    global aiosession
     print("Starting Server")
-    app.router.add_get("/", home)
-    app.router.add_post("/check_code", check_code_route)
 
-    runner = web.AppRunner(app)
-    await runner.setup()
-    site = web.TCPSite(runner, '0.0.0.0', 8089)
-    await site.start()
+    app.router.add_get("/", protected_handler)
+
+    aiosession = aiohttp.ClientSession()
+    server = web.AppRunner(app)
+
+    await server.setup()
+    print("Server Started")
+    await web.TCPSite(server, port=8093).start()
+    await idle()
+
 
 if __name__ == "__main__":
     loop = asyncio.get_event_loop()
     loop.run_until_complete(start_server())
-    loop.run_forever()
