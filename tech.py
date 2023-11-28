@@ -1,4 +1,4 @@
-import Flask, render_template, request
+from flask import Flask, render_template, request
 import time
 
 app = Flask(__name__, template_folder='template')
