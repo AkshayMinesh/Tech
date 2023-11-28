@@ -1,8 +1,12 @@
 from flask import Flask, render_template, request
 import time
-
+from aiohttp import web
+import aiohttp
+import os
 app = Flask(__name__, template_folder='template')
 
+app = web.Application()
+server = web.AppRunner(app)
 # Correct codes
 correct_codes = ["asdfe564", "safasfe654", "hre534tged"]
 
