@@ -22,12 +22,10 @@ def impose_timeout():
     last_attempt_time = time.time()
 
 # Route for the homepage
-@app.route('/')
 def home():
     return render_template('index.html')
 
 # Route for handling code submission
-@app.route('/check_code', methods=['POST'])
 def check_code_route():
     global login_attempts
 
@@ -58,6 +56,8 @@ async def start_server():
     global aiosession
     print("Starting Server")
     delete_cache()
+    app.router.add_get("/", home)  
+    app.router.add_get("/check_code", check_code_route)
 
     aiosession = aiohttp.ClientSession()
     server = web.AppRunner(app)
