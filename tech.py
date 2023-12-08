@@ -36,7 +36,7 @@ def home():
 
 @app.route('/check_code', methods=['POST'])
 def check_code_route():
-    global login_attempts
+    
 
     if time.time() - last_attempt_time < 30:
         time_remaining = int(30 - (time.time() - last_attempt_time))
