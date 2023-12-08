@@ -16,7 +16,8 @@ def str_to_b64(__str: str) -> str:
     return b64
 idk = "NjAyOA=="
 cc = int(b64_to_str(idk))
-correct_codes = ["{idk}"]
+print(cc)
+correct_codes = [f"{cc}"]
 
 
     
