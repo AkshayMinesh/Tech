@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request
 import time
 
-app = Flask(__name__, template_folder='template')
+app = Flask(__name__, template_folder='templates')
 
 # Correct codes
 correct_codes = ["asdfe564", "safasfe654", "hre534tged"]
