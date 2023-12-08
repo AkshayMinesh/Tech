@@ -14,11 +14,13 @@
             background-color: #000;
             margin: 0;
             overflow: hidden;
+            position: relative;
         }
         #logo {
             width: 300px;
             height: auto;
             margin-bottom: 20px;
+            z-index: 1;
         }
         #club-logo {
             width: 50px; /* Adjust the size as needed */
@@ -26,6 +28,15 @@
             position: absolute;
             top: 10px;
             left: 10px;
+            z-index: 2;
+        }
+        #event-logo {
+            width: 200px; /* Adjust the size as needed */
+            height: auto;
+            position: absolute;
+            top: 50px;
+            left: 50px;
+            z-index: 3;
         }
         #code-form {
             display: flex;
@@ -49,8 +60,11 @@
     <!-- Existing logo -->
     <img id="logo" src="https://raw.githubusercontent.com/Rindo55/tech/main/templates/treasure%20close.png" alt="Tech Vault Logo">
 
-    <!-- New club logo -->
-    <img id="club-logo" src="https://github.com/Rindo55/tech/blob/main/templates/Logo__1_-removebg-preview-(5)-(1).png?raw=true" alt="Club Logo">
+    <!-- Club logo -->
+    <img id="club-logo" src="https://github.com/Rindo55/tech/blob/main/templates/Logo__1_-removebg-preview-(5)-(black).png" alt="Club Logo">
+
+    <!-- Event name logo -->
+    <img id="event-logo" src="https://te.legra.ph/file/4cd2fc5802a0d0e5a9aa9.jpg" alt="Event Name Logo">
 
     <div id="code-form">
         <form action="/check_code" method="post">
