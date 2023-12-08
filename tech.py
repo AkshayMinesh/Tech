@@ -4,7 +4,7 @@ import time
 app = Flask(__name__, template_folder='templates')
 
 # Correct codes
-correct_codes = ["asdfe564", "safasfe654", "hre534tged"]
+correct_codes = ["tech", "club"]
 
 # Variables to track login attempts
 login_attempts = 0
