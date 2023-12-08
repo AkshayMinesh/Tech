@@ -74,7 +74,7 @@ def check_code_route():
         time_remaining = int(10 - (time.time() - session['last_attempt_time']))
         return f"Incorrect code.\nNote: A 30 seconds timeout will be imposed on 3 wrong attempts in a row." + """
             <script>
-                var countdown = 10;
+                var countdown = 5;
                 var countdownInterval = setInterval(function() {
                     countdown -= 1;
                     document.getElementById('countdown').innerHTML = countdown;
