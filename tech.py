@@ -1,10 +1,25 @@
 from flask import Flask, render_template, request
 import time
+from base64 import standard_b64encode, standard_b64decode
 
 app = Flask(__name__, template_folder='templates')
 
+def b64_to_str(b64: str) -> str:
+    bytes_b64 = b64.encode('ascii')
+    bytes_str = standard_b64decode(bytes_b64)
+    __str = bytes_str.decode('ascii')
+    return __str
+def str_to_b64(__str: str) -> str:
+    str_bytes = __str.encode('ascii')
+    bytes_b64 = standard_b64encode(str_bytes)
+    b64 = bytes_b64.decode('ascii')
+    return b64
+idk = "NjAyOA=="
+cc = int(b64_to_str(idk))
 correct_codes = ["tech", "club"]
 
+
+    
 login_attempts = 0
 last_attempt_time = 0
 
