@@ -84,7 +84,7 @@ def check_code_route():
                     }
                 }, 1000);
             </script>
-            <p>Redirecting in <span id='countdown'>10</span> seconds...</p>
+            <p>Redirecting in <span id='countdown'>5</span> seconds...</p>
             """
 
 if __name__ == '__main__':
